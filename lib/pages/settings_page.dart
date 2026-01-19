@@ -230,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                   ),
                   child: const Text(
                     '登出账户',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontFamily: "黑体",fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
