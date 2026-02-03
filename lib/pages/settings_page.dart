@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('版本：'),
-                                            Text('1.0.0'),
+                                            Text('1.1.0'),
                                           ],
                                         ),
                                         const SizedBox(height: 8),
@@ -172,7 +172,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                     // Gitee 仓库链接
                                     GestureDetector(
                                       onTap: () async {
-                                        final url = Uri.parse('https://gitee.com/initial-qwq/flutter_chmlfrp');
+                                        final url = Uri.parse('https://github.com/zhengyuliu047-rgb/ChmlFrp-flutter');
                                         if (await canLaunchUrl(url)) {
                                           await launchUrl(url);
                                         }
@@ -189,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           children: [
                                             Icon(Icons.code, size: 16),
                                             SizedBox(width: 8),
-                                            Text('Gitee 仓库'),
+                                            Text('Github 仓库'),
                                           ],
                                         ),
                                       ),
