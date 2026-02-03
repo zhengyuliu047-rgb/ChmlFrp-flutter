@@ -22,8 +22,8 @@ class AppTheme {
   static const dividerColor = Color(0xFFE5E7EB);
 
   // 字体配置
-  static const fontFamily = '黑体'; // 黑体
-  static const fontFamilyMono = '黑体'; // 等宽字体也使用黑体
+  static const fontFamily = 'HarmonyOS Sans'; // HarmonyOS Sans
+  static const fontFamilyMono = 'HarmonyOS Sans'; // 等宽字体也使用HarmonyOS Sans
 
   // 圆角配置
   static const borderRadiusSmall = 8.0;
@@ -62,6 +62,13 @@ class AppTheme {
     primaryColorLight: primaryColor.withOpacity(0.1),
     primaryColorDark: primaryColor.withOpacity(0.9),
     fontFamily: fontFamily,
+    fontFamilyFallback: const [
+      'HarmonyOS Sans',
+      'Helvetica Neue',
+      'PingFang SC',
+      'Source Han Sans SC',
+      'Noto Sans CJK SC'
+    ],
     colorScheme: ColorScheme.light(
       primary: primaryColor,
       secondary: secondaryColor,

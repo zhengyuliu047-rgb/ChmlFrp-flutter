@@ -203,7 +203,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                         ),
                       ),
-                      child: const Text('刷新状态', style: TextStyle(fontFamily: '黑体',fontSize: 12,)),
+                      child: const Text('刷新状态', style: TextStyle(fontFamily: 'HarmonyOS Sans',fontSize: 12,)),
                     ),
                   ),
                 ],
