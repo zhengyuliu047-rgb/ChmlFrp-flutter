@@ -95,7 +95,7 @@ class _NodeListPageState extends State<NodeListPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('关闭'),
+              child: const Text('关闭', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         );

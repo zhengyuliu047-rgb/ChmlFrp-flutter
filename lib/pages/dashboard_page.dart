@@ -14,6 +14,8 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   String _frpcVersion = '未知';
   int _runningTunnelCount = 0;
+  bool _isSigningIn = false;
+  String _signInStatus = '';
 
   @override
   void initState() {
@@ -36,6 +38,54 @@ class _DashboardPageState extends State<DashboardPage> {
     setState(() {
       _runningTunnelCount = FrpcService.getRunningTunnels().length;
     });
+  }
+
+  // 执行签到
+  Future<void> _performSignIn() async {
+    setState(() {
+      _isSigningIn = true;
+      _signInStatus = '正在签到...';
+    });
+
+    try {
+      // 这里需要实现验证码获取和处理逻辑
+      // 由于没有具体的验证码实现，这里使用模拟数据进行测试
+      // 实际使用时需要集成真实的验证码获取和处理
+      final result = await ApiService.signIn(
+        lotNumber: 'test_lot_number',
+        captchaOutput: 'test_captcha_output',
+        passToken: 'test_pass_token',
+        genTime: '${DateTime.now().millisecondsSinceEpoch}',
+      );
+
+      if (result != null) {
+        if (result['state'] == 'success' || result['code'] == 200) {
+          setState(() {
+            _signInStatus = '签到成功！';
+            // 刷新用户信息以更新积分
+            ApiService.refreshUserInfo().then((_) {
+              setState(() {});
+            });
+          });
+        } else {
+          setState(() {
+            _signInStatus = '签到失败：${result['msg'] ?? '未知错误'}';
+          });
+        }
+      } else {
+        setState(() {
+          _signInStatus = '签到失败：网络错误';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _signInStatus = '签到失败：${e.toString()}';
+      });
+    } finally {
+      setState(() {
+        _isSigningIn = false;
+      });
+    }
   }
 
   @override
@@ -127,6 +177,62 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 12),
+                            // 签到功能区域
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '每日签到',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: _isSigningIn ? null : _performSignIn,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppTheme.primaryColor,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                                          ),
+                                        ),
+                                        child: _isSigningIn
+                                            ? const SizedBox(
+                                                height: 16,
+                                                width: 16,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                ),
+                                              )
+                                            : const Text('立即签到', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (_signInStatus.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text(
+                                      _signInStatus,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: _signInStatus.contains('成功') 
+                                            ? AppTheme.successColor 
+                                            : AppTheme.errorColor,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -203,7 +309,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                         ),
                       ),
-                      child: const Text('刷新状态', style: TextStyle(fontFamily: 'HarmonyOS Sans',fontSize: 12,)),
+                      child: const Text('刷新状态', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -224,7 +330,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   const SizedBox(height: 8),
                   _buildSystemInfoItem('操作系统', 'Windows'),
-                  _buildSystemInfoItem('应用版本', '1.0.0'),
+                  _buildSystemInfoItem('应用版本', '1.1.0'),
                   _buildSystemInfoItem('API版本', 'v2'),
                   _buildSystemInfoItem('SDK版本', 'ChmlFrp.SDK'),
                 ],

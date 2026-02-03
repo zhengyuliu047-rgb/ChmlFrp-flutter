@@ -391,4 +391,42 @@ class ApiService {
     }
     return null;
   }
+
+  // MARK: - 签到相关
+
+  // 用户签到
+  static Future<Map<String, dynamic>?> signIn({
+    required String lotNumber,
+    required String captchaOutput,
+    required String passToken,
+    required String genTime,
+  }) async {
+    if (_userInfo == null) return null;
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/qiandao'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'token': userToken,
+          'lot_number': lotNumber,
+          'captcha_output': captchaOutput,
+          'pass_token': passToken,
+          'gen_time': genTime,
+        }),
+      );
+
+      print('[DEBUG] Sign in response status code: ${response.statusCode}');
+      print('[DEBUG] Sign in response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      print('Sign in HTTP Request Error: $e');
+    }
+    return null;
+  }
 }
