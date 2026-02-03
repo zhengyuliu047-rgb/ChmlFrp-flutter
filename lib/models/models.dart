@@ -197,26 +197,16 @@ class NodeData {
 // 节点详细信息模型
 class NodeInfo extends NodeData {
   final String ip;
-  final String location;
-  final String type;
   final String state;
-  final int uptime_seconds;
-  final double load15;
-  final int users;
-  final int bandwidth;
-  final int traffic;
   final int port;
   final int adminPort;
-  final int memory_total;
-  final int storage_total;
-  final int storage_used;
-  final double total_traffic_in;
-  final double total_traffic_out;
-  final String cpu_info;
   final String nodetoken;
   final String realIp;
   final String rport;
   final bool toowhite;
+  final String coordinates;
+  final String apitoken;
+  final dynamic ipv6;
 
   NodeInfo({
     required super.id,
@@ -229,26 +219,16 @@ class NodeInfo extends NodeData {
     required super.udp,
     required super.fangyu,
     required this.ip,
-    required this.location,
-    required this.type,
     required this.state,
-    required this.uptime_seconds,
-    required this.load15,
-    required this.users,
-    required this.bandwidth,
-    required this.traffic,
     required this.port,
     required this.adminPort,
-    required this.memory_total,
-    required this.storage_total,
-    required this.storage_used,
-    required this.total_traffic_in,
-    required this.total_traffic_out,
-    required this.cpu_info,
     required this.nodetoken,
     required this.realIp,
     required this.rport,
     required this.toowhite,
+    required this.coordinates,
+    required this.apitoken,
+    required this.ipv6,
   });
 
   factory NodeInfo.fromJson(Map<String, dynamic> json) {
@@ -263,26 +243,16 @@ class NodeInfo extends NodeData {
       udp: json['udp'] ?? '',
       fangyu: json['fangyu'] ?? '',
       ip: json['ip'] ?? '',
-      location: json['location'] ?? '',
-      type: json['type'] ?? '',
       state: json['state'] ?? '',
-      uptime_seconds: json['uptime_seconds'] ?? 0,
-      load15: json['load15'] ?? 0.0,
-      users: json['users'] ?? 0,
-      bandwidth: json['bandwidth'] ?? 0,
-      traffic: json['traffic'] ?? 0,
       port: json['port'] ?? 0,
       adminPort: json['adminPort'] ?? 0,
-      memory_total: json['memory_total'] ?? 0,
-      storage_total: json['storage_total'] ?? 0,
-      storage_used: json['storage_used'] ?? 0,
-      total_traffic_in: json['total_traffic_in'] ?? 0.0,
-      total_traffic_out: json['total_traffic_out'] ?? 0.0,
-      cpu_info: json['cpu_info'] ?? '',
       nodetoken: json['nodetoken'] ?? '',
       realIp: json['realIp'] ?? '',
       rport: json['rport'] ?? '',
       toowhite: json['toowhite'] ?? false,
+      coordinates: json['coordinates'] ?? '',
+      apitoken: json['apitoken'] ?? '',
+      ipv6: json['ipv6'],
     );
   }
 
@@ -291,26 +261,16 @@ class NodeInfo extends NodeData {
     return {
       ...super.toJson(),
       'ip': ip,
-      'location': location,
-      'type': type,
       'state': state,
-      'uptime_seconds': uptime_seconds,
-      'load15': load15,
-      'users': users,
-      'bandwidth': bandwidth,
-      'traffic': traffic,
       'port': port,
       'adminPort': adminPort,
-      'memory_total': memory_total,
-      'storage_total': storage_total,
-      'storage_used': storage_used,
-      'total_traffic_in': total_traffic_in,
-      'total_traffic_out': total_traffic_out,
-      'cpu_info': cpu_info,
       'nodetoken': nodetoken,
       'realIp': realIp,
       'rport': rport,
       'toowhite': toowhite,
+      'coordinates': coordinates,
+      'apitoken': apitoken,
+      'ipv6': ipv6,
     };
   }
 }

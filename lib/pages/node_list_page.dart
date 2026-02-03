@@ -76,16 +76,19 @@ class _NodeListPageState extends State<NodeListPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildNodeInfoRow('区域', nodeInfo.area),
-                _buildNodeInfoRow('位置', nodeInfo.location),
-                _buildNodeInfoRow('类型', nodeInfo.type),
                 _buildNodeInfoRow('状态', nodeInfo.state),
                 _buildNodeInfoRow('IP地址', nodeInfo.ip),
+                _buildNodeInfoRow('真实IP', nodeInfo.realIp),
                 _buildNodeInfoRow('端口', nodeInfo.port.toString()),
-                _buildNodeInfoRow('在线用户', nodeInfo.users.toString()),
-                _buildNodeInfoRow('负载', nodeInfo.load15.toStringAsFixed(2)),
-                _buildNodeInfoRow('带宽', '${nodeInfo.bandwidth} Mbps'),
-                _buildNodeInfoRow('流量', '${nodeInfo.traffic} MB'),
-                _buildNodeInfoRow('正常运行时间', _formatUptime(nodeInfo.uptime_seconds)),
+                _buildNodeInfoRow('UDP支持', nodeInfo.udp),
+                _buildNodeInfoRow('建站支持', nodeInfo.web),
+                _buildNodeInfoRow('防御', nodeInfo.fangyu),
+                _buildNodeInfoRow('外网端口范围', nodeInfo.rport),
+                _buildNodeInfoRow('节点组', nodeInfo.nodegroup),
+                _buildNodeInfoRow('国内带宽', nodeInfo.china),
+                _buildNodeInfoRow('过白', nodeInfo.toowhite ? '是' : '否'),
+                _buildNodeInfoRow('经纬度', nodeInfo.coordinates),
+                _buildNodeInfoRow('IPv6', nodeInfo.ipv6 != null ? nodeInfo.ipv6.toString() : '无'),
               ],
             ),
           ),
@@ -118,22 +121,6 @@ class _NodeListPageState extends State<NodeListPage> {
         ],
       ),
     );
-  }
-
-  // 格式化运行时间
-  String _formatUptime(int seconds) {
-    final days = seconds ~/ 86400;
-    final hours = (seconds % 86400) ~/ 3600;
-    final minutes = (seconds % 3600) ~/ 60;
-    final secs = seconds % 60;
-
-    final parts = <String>[];
-    if (days > 0) parts.add('${days}天');
-    if (hours > 0) parts.add('${hours}小时');
-    if (minutes > 0) parts.add('${minutes}分钟');
-    if (secs > 0) parts.add('${secs}秒');
-
-    return parts.join(' ');
   }
 
   @override

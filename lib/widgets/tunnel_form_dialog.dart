@@ -20,11 +20,13 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
   final _localIpController = TextEditingController(text: '127.0.0.1');
   final _localPortController = TextEditingController();
   final _remotePortController = TextEditingController();
+  final _bandDomainController = TextEditingController();
   
   List<NodeData> _nodes = [];
   bool _isLoading = false;
   bool _isSubmitting = false;
-  bool _useRandomPort = true;
+  bool _encryption = false;
+  bool _compression = false;
 
   // 隧道类型列表
   static const List<String> _tunnelTypes = ['tcp', 'udp', 'http', 'https'];
@@ -92,6 +94,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
     _localIpController.dispose();
     _localPortController.dispose();
     _remotePortController.dispose();
+    _bandDomainController.dispose();
     super.dispose();
   }
 
@@ -190,46 +193,59 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
     });
 
     try {
-      String result;
-      String remotePort;
-      if (_useRandomPort) {
-        // 生成一个1到65535之间的随机端口号
-        final random = Random();
-        remotePort = (random.nextInt(65534) + 1).toString();
-      } else {
-        remotePort = _remotePortController.text;
+      int? remotePort;
+      if (_remotePortController.text.isNotEmpty) {
+        remotePort = int.tryParse(_remotePortController.text);
       }
+      
+      int localPort = int.parse(_localPortController.text);
+      String bandDomain = _bandDomainController.text;
       
       if (widget.tunnel == null) {
         // 创建新隧道
-        result = await ApiService.createTunnel(
+        final result = await ApiService.createTunnel(
           _tunnelNameController.text,
           _nodeNameController.text,
           _typeController.text,
           _localIpController.text,
-          _localPortController.text,
+          localPort,
           remotePort,
+          bandDomain.isNotEmpty ? bandDomain : null,
+          _encryption,
+          _compression,
+          null
         );
+
+        if (mounted) {
+          if (result != null && result['code'] == 200) {
+            Navigator.pop(context, true);
+          } else {
+            String errorMsg = result?['msg'] ?? '创建失败';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('操作失败: $errorMsg')),
+            );
+          }
+        }
       } else {
-        // 编辑现有隧道
-        result = await ApiService.updateTunnel(
+        // 编辑现有隧道 - 暂时保持原有实现
+        String result = await ApiService.updateTunnel(
           widget.tunnel!,
           _tunnelNameController.text,
           _nodeNameController.text,
           _typeController.text,
           _localIpController.text,
           _localPortController.text,
-          remotePort,
+          _remotePortController.text,
         );
-      }
 
-      if (mounted) {
-        if (result.contains('成功')) {
-          Navigator.pop(context, true);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('操作失败: $result')),
-          );
+        if (mounted) {
+          if (result.contains('成功')) {
+            Navigator.pop(context, true);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('操作失败: $result')),
+            );
+          }
         }
       }
     } catch (error) {
@@ -244,6 +260,16 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
         _isSubmitting = false;
       });
     }
+  }
+
+  // 生成随机端口
+  void _generateRandomPort() {
+    final random = Random();
+    // 生成 10000-65535 之间的随机端口
+    final port = 10000 + random.nextInt(55536);
+    setState(() {
+      _remotePortController.text = port.toString();
+    });
   }
 
   @override
@@ -277,75 +303,126 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                     ),
               const SizedBox(height: 16),
 
-              // 隧道名称
-              TextFormField(
-                controller: _tunnelNameController,
-                decoration: _inputDecoration.copyWith(labelText: '隧道名称'),
-                validator: (value) => _validateRequired(value, '输入隧道名称'),
-              ),
-              const SizedBox(height: 16),
-
-              // 隧道类型
-              DropdownButtonFormField<String>(
-                initialValue: _typeController.text,
-                decoration: _inputDecoration.copyWith(labelText: '类型'),
-                items: _tunnelTypes.map((type) {
-                  return DropdownMenuItem(
-                    value: type,
-                    child: Text(type.toUpperCase()),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    _typeController.text = value;
-                  }
-                },
-                validator: (value) => _validateRequired(value, '选择隧道类型'),
-              ),
-              const SizedBox(height: 16),
-
-              // 本地IP
-              TextFormField(
-                controller: _localIpController,
-                decoration: _inputDecoration.copyWith(labelText: '本地IP'),
-                validator: _validateIp,
-              ),
-              const SizedBox(height: 16),
-
-              // 本地端口
-              TextFormField(
-                controller: _localPortController,
-                decoration: _inputDecoration.copyWith(labelText: '本地端口'),
-                keyboardType: TextInputType.number,
-                validator: _validatePort,
-              ),
-              const SizedBox(height: 16),
-
-              // 远程端口
-              Column(
+              // 一行两个字段的布局
+              Row(
                 children: [
-                  TextFormField(
-                    controller: _remotePortController,
-                    decoration: _inputDecoration.copyWith(labelText: '远程端口'),
-                    keyboardType: TextInputType.number,
-                    enabled: !_useRandomPort,
-                    validator: (value) {
-                      if (_useRandomPort) {
-                        return null;
-                      }
-                      return _validatePort(value);
-                    },
+                  Expanded(
+                    child: TextFormField(
+                      controller: _tunnelNameController,
+                      decoration: _inputDecoration.copyWith(labelText: '隧道名称'),
+                      validator: (value) => _validateRequired(value, '输入隧道名称'),
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  SwitchListTile(
-                    title: const Text('使用随机端口'),
-                    value: _useRandomPort,
-                    onChanged: (value) {
-                      setState(() {
-                        _useRandomPort = value;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      initialValue: _typeController.text,
+                      decoration: _inputDecoration.copyWith(labelText: '类型'),
+                      items: _tunnelTypes.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(type.toUpperCase()),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _typeController.text = value;
+                          });
+                        }
+                      },
+                      validator: (value) => _validateRequired(value, '选择隧道类型'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // 本地IP和本地端口
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _localIpController,
+                      decoration: _inputDecoration.copyWith(labelText: '本地IP'),
+                      validator: _validateIp,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _localPortController,
+                      decoration: _inputDecoration.copyWith(labelText: '本地端口'),
+                      keyboardType: TextInputType.number,
+                      validator: _validatePort,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // 根据端口类型显示不同的字段
+              _typeController.text == 'tcp' || _typeController.text == 'udp'
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _remotePortController,
+                            decoration: _inputDecoration.copyWith(labelText: '远程端口'),
+                            keyboardType: TextInputType.number,
+                            validator: _validatePort,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: _generateRandomPort,
+                          child: const Text('随机端口'),
+                        ),
+                      ],
+                    )
+                  : Container(),
+              
+              _typeController.text == 'http' || _typeController.text == 'https'
+                  ? TextFormField(
+                      controller: _bandDomainController,
+                      decoration: _inputDecoration.copyWith(labelText: '绑定域名'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '请输入绑定域名';
+                        }
+                        return null;
+                      },
+                    )
+                  : Container(),
+              
+              const SizedBox(height: 16),
+
+              // 数据加密和数据压缩
+              Row(
+                children: [
+                  Expanded(
+                    child: SwitchListTile(
+                      title: const Text('数据加密'),
+                      value: _encryption,
+                      onChanged: (value) {
+                        setState(() {
+                          _encryption = value;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ),
+                  Expanded(
+                    child: SwitchListTile(
+                      title: const Text('数据压缩'),
+                      value: _compression,
+                      onChanged: (value) {
+                        setState(() {
+                          _compression = value;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
                   ),
                 ],
               ),

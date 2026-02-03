@@ -210,55 +210,91 @@ class ApiService {
   }
 
   // 创建隧道
-  static Future<String> createTunnel(
+  static Future<Map<String, dynamic>?> createTunnel(
     String tunnelName,
     String nodeName,
-    String type,
+    String portType,
     String localIp,
-    String localPort,
-    String remotePort,
+    int localPort,
+    int? remotePort,
+    String? bandDomain,
+    bool encryption,
+    bool compression,
+    String? extraParams,
   ) async {
     if (_userInfo == null) {
       print('[DEBUG] User not logged in, cannot create tunnel');
-      return '请先登录';
+      return {'code': 401, 'msg': '请先登录'};
     }
 
     print('[DEBUG] Creating tunnel with parameters:');
     print('[DEBUG] tunnelName: $tunnelName');
     print('[DEBUG] nodeName: $nodeName');
-    print('[DEBUG] type: $type');
+    print('[DEBUG] portType: $portType');
     print('[DEBUG] localIp: $localIp');
     print('[DEBUG] localPort: $localPort');
     print('[DEBUG] remotePort: $remotePort');
+    print('[DEBUG] bandDomain: $bandDomain');
+    print('[DEBUG] encryption: $encryption');
+    print('[DEBUG] compression: $compression');
+    print('[DEBUG] extraParams: $extraParams');
     print('[DEBUG] userToken: $userToken');
-    print('[DEBUG] userId: $userId');
 
-    // 使用与C# SDK相同的方式，使用GET请求并将参数作为查询字符串
-    final params = {
+    // 构建请求体
+    final body = {
       'token': userToken,
-      'userid': userId,
-      'name': tunnelName,
+      'tunnelname': tunnelName,
       'node': nodeName,
-      'type': type,
       'localip': localIp,
-      'nport': localPort,
-      'dorp': remotePort,
-      'encryption': 'false',
-      'compression': 'false',
-      'ap': '',
+      'porttype': portType,
+      'localport': localPort,
+      'encryption': encryption,
+      'compression': compression,
     };
 
-    print('[DEBUG] Request params: $params');
+    // 根据端口类型添加相应的参数
+    if (portType == 'tcp' || portType == 'udp') {
+      if (remotePort != null) {
+        body['remoteport'] = remotePort;
+      }
+    } else if (portType == 'http' || portType == 'https') {
+      if (bandDomain != null) {
+        body['banddomain'] = bandDomain;
+      }
+    }
 
-    final result = await _getRequest(
-      '$baseUrlV1/api/tunnel.php',
-      params,
-    );
+    // 添加额外参数
+    if (extraParams != null && extraParams.isNotEmpty) {
+      body['extraparams'] = extraParams;
+    }
 
-    print('[DEBUG] API response: $result');
-    print('[DEBUG] API response error: ${result?['error']}');
+    print('[DEBUG] Request body: $body');
 
-    return result?['error'] ?? '创建失败';
+    try {
+      // 使用POST请求，Content-Type为application/json
+      final response = await http.post(
+        Uri.parse('$baseUrl/create_tunnel'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      print('[DEBUG] Response status code: ${response.statusCode}');
+      print('[DEBUG] Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final result = json.decode(response.body);
+        print('[DEBUG] API response: $result');
+        return result;
+      } else {
+        print('[DEBUG] API request failed with status code: ${response.statusCode}');
+        return {'code': response.statusCode, 'msg': '请求失败: ${response.statusCode}'};
+      }
+    } catch (e) {
+      print('HTTP Request Error: $e');
+      return {'code': 500, 'msg': '网络错误: $e'};
+    }
   }
 
   // 更新隧道
