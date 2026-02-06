@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/animation_utils.dart';
 import '../widgets/about_dialog.dart';
+import '../models/models.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -15,6 +19,10 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _launchAtStartup = false;
+  bool _isLoading = false;
+  bool _autoStartTunnel = false;
+  List<String> _autoStartTunnelIds = [];
   
   @override
   void initState() {
@@ -25,6 +33,159 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     );
     _fadeAnimation = AnimationUtils.createFadeAnimation(_animationController);
     _animationController.forward();
+    _initializeLaunchAtStartup();
+    _initializeAutoStartTunnel();
+  }
+  
+  // 初始化开机自启设置
+  Future<void> _initializeLaunchAtStartup() async {
+    try {
+      // 设置应用信息
+      launchAtStartup.setup(
+        appName: 'ChmlFrp',
+        appPath: Platform.resolvedExecutable,
+      );
+      
+      // 检查当前状态
+      final isEnabled = await launchAtStartup.isEnabled();
+      setState(() {
+        _launchAtStartup = isEnabled;
+      });
+    } catch (e) {
+      print('初始化开机自启设置失败: $e');
+    }
+  }
+  
+  // 切换开机自启状态
+  Future<void> _toggleLaunchAtStartup(bool value) async {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try {
+      if (value) {
+        await launchAtStartup.enable();
+      } else {
+        await launchAtStartup.disable();
+      }
+      
+      setState(() {
+        _launchAtStartup = value;
+      });
+      
+      // 保存设置到本地存储
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('launchAtStartup', value);
+    } catch (e) {
+      print('切换开机自启状态失败: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+  
+  // 初始化自动启动隧道设置
+  Future<void> _initializeAutoStartTunnel() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final autoStartEnabled = prefs.getBool('autoStartTunnel') ?? false;
+      final tunnelIds = prefs.getStringList('autoStartTunnelIds') ?? [];
+      
+      setState(() {
+        _autoStartTunnel = autoStartEnabled;
+        _autoStartTunnelIds = tunnelIds;
+      });
+    } catch (e) {
+      print('初始化自动启动隧道设置失败: $e');
+    }
+  }
+  
+  // 切换自动启动隧道状态
+  Future<void> _toggleAutoStartTunnel(bool value) async {
+    setState(() {
+      _autoStartTunnel = value;
+    });
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('autoStartTunnel', value);
+    } catch (e) {
+      print('切换自动启动隧道状态失败: $e');
+    }
+  }
+  
+  // 配置自动启动隧道
+  void _configureAutoStartTunnel() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('配置自动启动隧道'),
+        content: FutureBuilder<List<TunnelInfo>>(
+          future: ApiService.getTunnelList(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('获取隧道列表失败: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Text('未获取到隧道列表');
+            } else {
+              final tunnels = snapshot.data!;
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: tunnels.map((tunnel) {
+                        final isSelected = _autoStartTunnelIds.contains(tunnel.id.toString());
+                        return CheckboxListTile(
+                          title: Text(tunnel.name),
+                          subtitle: Text('${tunnel.type} | ${tunnel.node} | 端口: ${tunnel.nport}'),
+                          value: isSelected,
+                          onChanged: (value) {
+                            setState(() {
+                              if (value == true) {
+                                _autoStartTunnelIds.add(tunnel.id.toString());
+                              } else {
+                                _autoStartTunnelIds.remove(tunnel.id.toString());
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // 保存配置
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setStringList('autoStartTunnelIds', _autoStartTunnelIds);
+              
+              // 更新UI
+              setState(() {
+                // UI will be updated when the dialog is closed
+              });
+              
+              Navigator.of(context).pop();
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -52,39 +213,43 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
           padding: const EdgeInsets.all(20),
           child: ListView(
             children: [
-              // 账户信息卡片
+              // 系统设置卡片
               SettingsCard(
-                title: '账户信息',
-                icon: Icons.person,
-                iconColor: AppTheme.primaryColor,
+                title: '系统设置',
+                icon: Icons.computer,
+                iconColor: AppTheme.accentColor,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SettingItem(
-                        label: '用户名',
-                        value: ApiService.userInfo?.username ?? '',
-                      ),
-                      SettingItem(
-                        label: '用户组',
-                        value: ApiService.userInfo?.usergroup ?? '',
-                      ),
-                      SettingItem(
-                        label: '邮箱',
-                        value: ApiService.userInfo?.email ?? '',
-                      ),
-                      SettingItem(
-                        label: 'QQ',
-                        value: ApiService.userInfo?.qq ?? '',
-                      ),
-                      SettingItem(
-                        label: '注册时间',
-                        value: ApiService.userInfo?.regtime ?? '',
-                      ),
-                      SettingItem(
-                        label: '积分',
-                        value: ApiService.userInfo?.integral.toString() ?? '',
+                      const Divider(height: 1, color: AppTheme.borderColor),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('开机自启',style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w700)),
+                                Text(
+                                  '应用将在系统启动时自动运行',
+                                  style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                            _isLoading
+                                ? CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                                  )
+                                : Switch(
+                                    value: _launchAtStartup,
+                                    onChanged: _toggleLaunchAtStartup,
+                                    activeColor: AppTheme.primaryColor,
+                                  ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -92,7 +257,74 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
               ),
               const SizedBox(height: 20),
 
-
+              // 自动启动隧道卡片
+              SettingsCard(
+                title: '自动启动隧道',
+                icon: Icons.link,
+                iconColor: AppTheme.primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const Divider(height: 1, color: AppTheme.borderColor),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('启用自动启动隧道' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w700)),
+                                Text(
+                                  '程序启动时自动启动选定的隧道',
+                                  style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                            Switch(
+                              value: _autoStartTunnel,
+                              onChanged: _toggleAutoStartTunnel,
+                              activeColor: AppTheme.primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('配置自动启动的隧道',style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w700)),
+                                Text(
+                                  _autoStartTunnelIds.isEmpty ? '未配置任何隧道' : '已配置 ${_autoStartTunnelIds.length} 个隧道',
+                                  style:TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              onPressed: _configureAutoStartTunnel,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+                                ),
+                              ),
+                              child: const Text('配置隧道',style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
               // 其他设置卡片
               SettingsCard(
@@ -106,7 +338,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       const Divider(height: 1, color: AppTheme.borderColor),
                       SettingTile(
                         title: '关于',
-                        subtitle: 'ChmlFrp Flutter 客户端 v1.2.1',
+                        subtitle: 'ChmlFrp Flutter 客户端 v1.3',
                         onTap: () {
                           showDialog(
                             context: context,
@@ -146,7 +378,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('版本：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
-                                            Text('1.2.1'),
+                                            Text('1.3'),
                                           ],
                                         ),
                                         const SizedBox(height: 8),

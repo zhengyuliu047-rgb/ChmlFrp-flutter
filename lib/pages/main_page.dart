@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/tunnel_list_page.dart';
 import '../pages/node_list_page.dart';
 import '../pages/settings_page.dart';
 import '../pages/logs_page.dart';
 import '../services/api_service.dart';
+import '../services/frpc_service.dart';
 import '../theme/app_theme.dart';
 
 class MainPage extends StatefulWidget {
@@ -78,6 +80,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     );
     // 刷新用户信息以获取最新头像
     _refreshUserInfo();
+    // 自动启动隧道
+    _autoStartTunnels();
     // 启动动画
     _animationController.forward();
   }
@@ -86,6 +90,38 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   Future<void> _refreshUserInfo() async {
     await ApiService.refreshUserInfo();
     // userInfo 是从 ApiService 全局获取的，不需要 setState
+  }
+  
+  // 自动启动隧道
+  Future<void> _autoStartTunnels() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final autoStartEnabled = prefs.getBool('autoStartTunnel') ?? false;
+      
+      if (autoStartEnabled) {
+        final tunnelIds = prefs.getStringList('autoStartTunnelIds') ?? [];
+        
+        if (tunnelIds.isNotEmpty) {
+          // 获取所有隧道信息
+          final allTunnels = await ApiService.getTunnelList();
+          
+          // 启动每个自动启动的隧道
+          for (final tunnelIdStr in tunnelIds) {
+            final tunnelId = int.tryParse(tunnelIdStr);
+            if (tunnelId != null) {
+              // 检查隧道是否存在
+              final tunnelExists = allTunnels.any((tunnel) => tunnel.id == tunnelId);
+              if (tunnelExists) {
+                // 启动隧道
+                await FrpcService.startTunnel(tunnelId, null);
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('自动启动隧道失败: $e');
+    }
   }
 
   @override

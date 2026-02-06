@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../services/api_service.dart';
 import '../services/frpc_service.dart';
 import '../theme/app_theme.dart';
@@ -16,12 +17,25 @@ class _DashboardPageState extends State<DashboardPage> {
   int _runningTunnelCount = 0;
   bool _isSigningIn = false;
   String _signInStatus = '';
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _checkFrpcVersion();
     _updateRunningTunnelCount();
+    
+    // 初始化定时器，每 2 秒刷新一次运行中的隧道数量
+    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      _updateRunningTunnelCount();
+    });
+  }
+  
+  @override
+  void dispose() {
+    // 取消定时器
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   // 检查frpc版本
@@ -326,11 +340,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     valueColor: AppTheme.textPrimary,
                   ),
                   const SizedBox(height: 16),
-                  StatusItem(
-                    label: '运行中隧道',
-                    value: _runningTunnelCount.toString(),
-                    valueColor: AppTheme.textPrimary,
-                  ),
                   const SizedBox(height: 20),
 
                 ],
@@ -351,7 +360,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   const SizedBox(height: 8),
                   _buildSystemInfoItem('操作系统', 'Windows'),
-                  _buildSystemInfoItem('应用版本', '1.2.1'),
+                  _buildSystemInfoItem('应用版本', '1.3'),
                   _buildSystemInfoItem('API版本', 'v2'),
                   _buildSystemInfoItem('SDK版本', 'ChmlFrp.SDK'),
                 ],
