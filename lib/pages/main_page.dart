@@ -163,7 +163,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
           Expanded(
             child: Scaffold(
               appBar: AppBar(
-                title: Text(_menuItems[_selectedIndex]['title']),
+                title: Text(_menuItems[_selectedIndex]['title'], style: TextStyle(fontFamily: "HarmonyOS Sans")),
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
                 elevation: 0,
@@ -242,6 +242,7 @@ class SidebarWidget extends StatelessWidget {
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryColor,
+                          fontFamily: "HarmonyOS Sans",
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -293,18 +294,19 @@ class SidebarWidget extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 12),
                                 child: Text(
-                                  item['title'],
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: selectedIndex == index 
-                                        ? FontWeight.bold 
-                                        : FontWeight.normal,
-                                    color: selectedIndex == index 
-                                        ? AppTheme.primaryColor 
-                                        : AppTheme.textPrimary,
+                                    item['title'],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: selectedIndex == index 
+                                          ? FontWeight.bold 
+                                          : FontWeight.normal,
+                                      color: selectedIndex == index 
+                                          ? AppTheme.primaryColor 
+                                          : AppTheme.textPrimary,
+                                      fontFamily: "HarmonyOS Sans",
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
                               ),
                           ],
                         ),
@@ -343,6 +345,7 @@ class SidebarWidget extends StatelessWidget {
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
                               color: AppTheme.errorColor,
+                              fontFamily: "HarmonyOS Sans",
                             ),
                           ),
                         ),

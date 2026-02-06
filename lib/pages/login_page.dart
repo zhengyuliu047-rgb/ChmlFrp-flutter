@@ -145,6 +145,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                   fontSize: 48,
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.primaryColor,
+                                  fontFamily: "HarmonyOS Sans",
                                 ),
                               ),
                             ),
@@ -156,6 +157,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: AppTheme.textSecondary,
+                                  fontFamily: "HarmonyOS Sans",
                                 ),
                               ),
                             ),
@@ -180,7 +182,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                       Expanded(
                                         child: Text(
                                           _errorMessage,
-                                          style: TextStyle(color: AppTheme.errorColor),
+                                          style: TextStyle(color: AppTheme.errorColor, fontFamily: "HarmonyOS Sans"),
                                         ),
                                       ),
                                     ],
@@ -243,7 +245,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                                       )
                                     : Text(
                                         '登录',
-                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: "HarmonyOS Sans"),
                                       ),
                               ),
                             ),

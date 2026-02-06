@@ -58,7 +58,7 @@ class _NodeListPageState extends State<NodeListPage> {
     } else if (mounted) {
       // 显示权限不足的提示
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('权限不足，无法查看节点详情')),
+        const SnackBar(content: Text('权限不足，无法查看节点详情', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
       );
     }
   }
@@ -69,7 +69,7 @@ class _NodeListPageState extends State<NodeListPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(nodeInfo.name),
+          title: Text(nodeInfo.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,10 +114,10 @@ class _NodeListPageState extends State<NodeListPage> {
             width: 80,
             child: Text(
               '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: "HarmonyOS Sans"),
             ),
           ),
-          Expanded(child: Text(value)),
+          Expanded(child: Text(value, style: TextStyle(fontFamily: "HarmonyOS Sans"))),
         ],
       ),
     );
@@ -132,7 +132,7 @@ class _NodeListPageState extends State<NodeListPage> {
               onRefresh: _refreshNodes,
               child: _nodes.isEmpty
                   ? const Center(
-                      child: Text('暂无节点'),
+                      child: Text('暂无节点', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                     )
                   : ListView.builder(
                       itemCount: _nodes.length,
@@ -142,16 +142,16 @@ class _NodeListPageState extends State<NodeListPage> {
                           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: ListTile(
                             leading: Icon(Icons.dns, size: 32, color: Theme.of(context).colorScheme.primary),
-                            title: Text(node.name),
+                            title: Text(node.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('区域: ${node.area}'),
-                                Text('节点组: ${node.nodegroup}'),
+                                Text('区域: ${node.area}', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                                Text('节点组: ${node.nodegroup}', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                                 if (node.notes.isNotEmpty)
                                   Text(
                                     '备注: ${node.notes}',
-                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontFamily: "HarmonyOS Sans"),
                                   ),
                               ],
                             ),

@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
+import '../services/frpc_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/animation_utils.dart';
 import '../widgets/about_dialog.dart';
@@ -120,16 +121,16 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('配置自动启动隧道'),
+        title: const Text('配置自动启动隧道', style: TextStyle(fontFamily: "HarmonyOS Sans")),
         content: FutureBuilder<List<TunnelInfo>>(
           future: ApiService.getTunnelList(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Text('获取隧道列表失败: ${snapshot.error}');
+              return Text('获取隧道列表失败: ${snapshot.error}', style: TextStyle(fontFamily: "HarmonyOS Sans"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Text('未获取到隧道列表');
+              return const Text('未获取到隧道列表', style: TextStyle(fontFamily: "HarmonyOS Sans"));
             } else {
               final tunnels = snapshot.data!;
               return StatefulBuilder(
@@ -140,8 +141,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       children: tunnels.map((tunnel) {
                         final isSelected = _autoStartTunnelIds.contains(tunnel.id.toString());
                         return CheckboxListTile(
-                          title: Text(tunnel.name),
-                          subtitle: Text('${tunnel.type} | ${tunnel.node} | 端口: ${tunnel.nport}'),
+                          title: Text(tunnel.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                          subtitle: Text('${tunnel.type} | ${tunnel.node} | 端口: ${tunnel.nport}', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                           value: isSelected,
                           onChanged: (value) {
                             setState(() {
@@ -166,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('取消'),
+            child: const Text('取消', style: TextStyle(fontFamily: "HarmonyOS Sans")),
           ),
           TextButton(
             onPressed: () async {
@@ -181,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
               
               Navigator.of(context).pop();
             },
-            child: const Text('保存'),
+            child: const Text('保存', style: TextStyle(fontFamily: "HarmonyOS Sans")),
           ),
         ],
       ),
@@ -201,6 +202,52 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     await ApiService.logout();
     if (mounted) {
       Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+  
+  // 处理杀死所有 frpc 进程
+  Future<void> _killAllFrpcProcesses() async {
+    try {
+      // 显示加载状态
+      setState(() {
+        _isLoading = true;
+      });
+      
+      // 调用 FrpcService.stopAllFrpcProcesses() 方法杀死所有 frpc 进程
+      await FrpcService.stopAllFrpcProcesses();
+      
+      // 显示成功提示
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('已成功杀死所有 frpc 进程', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+            backgroundColor: AppTheme.successColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      // 显示错误提示
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('杀死 frpc 进程失败: $e', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+            backgroundColor: AppTheme.errorColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      // 隐藏加载状态
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -337,13 +384,43 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                     children: [
                       const Divider(height: 1, color: AppTheme.borderColor),
                       SettingTile(
-                        title: '关于',
-                        subtitle: 'ChmlFrp Flutter 客户端 v1.3.1',
+                        title: '杀死所有 frpc 进程',
+                        subtitle: '当 frpc 启动出现问题时使用',
+                        titleStyle: const TextStyle(fontFamily: "HarmonyOS Sans", color: Colors.red, fontWeight: FontWeight.bold),
+                        subtitleStyle: const TextStyle(fontFamily: "HarmonyOS Sans", color: Colors.red, fontWeight: FontWeight.bold, fontSize: 12),
                         onTap: () {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: Text('关于 ChmlFrp'),
+                              title: const Text('确认操作', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                              content: const Text('确定要杀死所有 frpc 进程吗？这将停止所有正在运行的隧道。', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('取消', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    await _killAllFrpcProcesses();
+                                  },
+                                  child: const Text('确认',style: TextStyle(fontFamily: "HarmonyOS Sans"),),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      SettingTile(
+                        title: '关于',
+                        subtitle: 'ChmlFrp Flutter 客户端 v1.3.2',
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('关于 ChmlFrp', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                               content: SingleChildScrollView(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -364,7 +441,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           ),
                                         ),
                                         const SizedBox(height: 16),
-                                        const Text('作者：初'),
+                                        const Text('作者：初', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                                       ],
                                     ),
                                     const SizedBox(height: 24),
@@ -378,7 +455,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('版本：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
-                                            Text('1.3.1'),
+                                            Text('1.3.2', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                                           ],
                                         ),
                                         const SizedBox(height: 8),
@@ -386,7 +463,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('平台：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
-                                            Text('Flutter 跨平台'),
+                                            Text('Flutter 跨平台', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                                           ],
                                         ),
                                         const SizedBox(height: 8),
@@ -394,7 +471,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('描述：' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
-                                            Text('ChmlFrp 客户端'),
+                                            Text('ChmlFrp 客户端', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                                           ],
                                         ),
                                       ],
@@ -524,6 +601,7 @@ class SettingsCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    fontFamily: "HarmonyOS Sans",
                   ),
                 ),
               ],
@@ -552,8 +630,8 @@ class SettingItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: AppTheme.textSecondary)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(label, style: TextStyle(color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans")),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w500, fontFamily: "HarmonyOS Sans")),
         ],
       ),
     );
@@ -580,7 +658,7 @@ class StatusItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(color: AppTheme.textSecondary)),
+        Text(label, style: TextStyle(color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans")),
         if (isLoading)
           const SizedBox(
             height: 16,
@@ -596,6 +674,7 @@ class StatusItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w500,
               color: valueColor ?? AppTheme.textPrimary,
+              fontFamily: "HarmonyOS Sans",
             ),
           ),
       ],
@@ -608,12 +687,16 @@ class SettingTile extends StatelessWidget {
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
+  final TextStyle? titleStyle;
+  final TextStyle? subtitleStyle;
 
   const SettingTile({
     super.key,
     required this.title,
     this.subtitle,
     required this.onTap,
+    this.titleStyle,
+    this.subtitleStyle,
   });
 
   @override
@@ -631,11 +714,11 @@ class SettingTile extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title),
+                  Text(title, style: titleStyle ?? TextStyle(fontFamily: "HarmonyOS Sans")),
                   if (subtitle != null)
                     Text(
                       subtitle!,
-                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                      style: subtitleStyle ?? TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontFamily: "HarmonyOS Sans"),
                     ),
                 ],
               ),

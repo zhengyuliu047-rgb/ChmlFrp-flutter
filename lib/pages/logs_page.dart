@@ -204,6 +204,7 @@ class _LogsPageState extends State<LogsPage> with SingleTickerProviderStateMixin
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              fontFamily: "HarmonyOS Sans",
                             ),
                           ),
                         ],
@@ -292,12 +293,14 @@ class _LogsPageState extends State<LogsPage> with SingleTickerProviderStateMixin
                             '状态: ',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              fontFamily: "HarmonyOS Sans",
                             ),
                           ),
                           Text(
                             FrpcService.isFrpcProcessRunning() ? '正在运行' : '已停止',
                             style: TextStyle(
                               color: FrpcService.isFrpcProcessRunning() ? AppTheme.successColor : AppTheme.errorColor,
+                              fontFamily: "HarmonyOS Sans",
                             ),
                           ),
                         ],
@@ -307,6 +310,7 @@ class _LogsPageState extends State<LogsPage> with SingleTickerProviderStateMixin
                         style: TextStyle(
                           color: AppTheme.textSecondary,
                           fontSize: 12,
+                          fontFamily: "HarmonyOS Sans",
                         ),
                       ),
                     ],

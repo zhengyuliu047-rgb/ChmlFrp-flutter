@@ -106,7 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final userInfo = ApiService.userInfo;
     if (userInfo == null) {
-      return const Center(child: Text('用户信息加载失败'));
+      return const Center(child: Text('用户信息加载失败', style: TextStyle(fontFamily: "HarmonyOS Sans")));
     }
 
     return Padding(
@@ -145,7 +145,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             ? NetworkImage(userInfo.userimg)
                             : null,
                         child: userInfo.userimg.isEmpty == true
-                            ? Text(userInfo.username.substring(0, 1).toUpperCase(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                            ? Text(userInfo.username.substring(0, 1).toUpperCase(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: "HarmonyOS Sans"))
                             : null,
                         backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
                       ),
@@ -160,6 +160,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                fontFamily: "HarmonyOS Sans",
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -169,6 +170,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               style: TextStyle(
                                 color: AppTheme.textSecondary,
                                 fontSize: 12,
+                                fontFamily: "HarmonyOS Sans",
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -178,7 +180,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 Icon(Icons.email, size: 14, color: AppTheme.textTertiary),
                                 const SizedBox(width: 4),
                                 Expanded(
-                                  child: Text(userInfo.email, style: TextStyle(fontSize: 11, color: AppTheme.textSecondary), overflow: TextOverflow.ellipsis),
+                                  child: Text(userInfo.email, style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans"), overflow: TextOverflow.ellipsis),
                                 ),
                               ],
                             ),
@@ -187,7 +189,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 Icon(Icons.calendar_today, size: 14, color: AppTheme.textTertiary),
                                 const SizedBox(width: 4),
                                 Expanded(
-                                  child: Text('注册于 ${userInfo.regtime}', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary), overflow: TextOverflow.ellipsis),
+                                  child: Text('注册于 ${userInfo.regtime}', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans"), overflow: TextOverflow.ellipsis),
                                 ),
                               ],
                             ),
@@ -202,6 +204,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.textPrimary,
+                                    fontFamily: "HarmonyOS Sans",
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -227,7 +230,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                                 ),
                                               )
-                                            : const Text('立即签到', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                            : const Text('立即签到', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, fontFamily: "HarmonyOS Sans")),
                                       ),
                                     ),
                                   ],
@@ -236,14 +239,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8),
                                     child: Text(
-                                      _signInStatus,
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: _signInStatus.contains('成功') 
-                                            ? AppTheme.successColor 
-                                            : AppTheme.errorColor,
+                                        _signInStatus,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: _signInStatus.contains('成功') 
+                                              ? AppTheme.successColor 
+                                              : AppTheme.errorColor,
+                                          fontFamily: "HarmonyOS Sans",
+                                        ),
                                       ),
-                                    ),
                                   ),
                               ],
                             ),
@@ -290,7 +294,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('带宽限速', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                                Text('带宽限速', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontFamily: "HarmonyOS Sans")),
                                 const SizedBox(height: 4),
                                 ..._getBandwidthLimit(userInfo.usergroup).entries.map((entry) {
                                   return Padding(
@@ -299,9 +303,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                       children: [
                                         Container(
                                           width: 50,
-                                          child: Text(entry.key, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                                          child: Text(entry.key, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans")),
                                         ),
-                                        Text(' ${entry.value} Mbps', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)),
+                                        Text(' ${entry.value} Mbps', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor, fontFamily: "HarmonyOS Sans")),
                                       ],
                                     ),
                                   );
@@ -360,7 +364,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   const SizedBox(height: 8),
                   _buildSystemInfoItem('操作系统', 'Windows'),
-                  _buildSystemInfoItem('应用版本', '1.3.1'),
+                  _buildSystemInfoItem('应用版本', '1.3.2'),
                   _buildSystemInfoItem('API版本', 'v2'),
                   _buildSystemInfoItem('SDK版本', 'ChmlFrp.SDK'),
                 ],
@@ -381,7 +385,7 @@ class _DashboardPageState extends State<DashboardPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+          style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontFamily: "HarmonyOS Sans"),
         ),
         const SizedBox(height: 6),
         Text(
@@ -390,6 +394,7 @@ class _DashboardPageState extends State<DashboardPage> {
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: valueColor,
+            fontFamily: "HarmonyOS Sans",
           ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -404,8 +409,8 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          Text(label, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12, fontFamily: "HarmonyOS Sans")),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, fontFamily: "HarmonyOS Sans")),
         ],
       ),
     );
@@ -485,6 +490,7 @@ class DashboardCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
+                          fontFamily: "HarmonyOS Sans",
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -524,7 +530,7 @@ class StatusItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: AppTheme.textSecondary)),
+        Text(label, style: const TextStyle(color: AppTheme.textSecondary, fontFamily: "HarmonyOS Sans")),
         if (isLoading)
           const SizedBox(
             height: 16,
@@ -540,6 +546,7 @@ class StatusItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: valueColor ?? AppTheme.textPrimary,
+              fontFamily: "HarmonyOS Sans",
             ),
           ),
       ],

@@ -113,7 +113,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
         // 显示权限不足的提示
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('权限不足，无法查看节点列表')),
+            const SnackBar(content: Text('权限不足，无法查看节点列表', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
           );
         }
       }
@@ -128,7 +128,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
       // 处理网络错误
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('加载节点失败: $error')),
+          SnackBar(content: Text('加载节点失败: $error', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
         );
       }
       setState(() {
@@ -222,7 +222,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
           } else {
             String errorMsg = result?['msg'] ?? '创建失败';
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('操作失败: $errorMsg')),
+              SnackBar(content: Text('操作失败: $errorMsg', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
             );
           }
         }
@@ -243,7 +243,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
             Navigator.pop(context, true);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('操作失败: $result')),
+              SnackBar(content: Text('操作失败: $result', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
             );
           }
         }
@@ -252,7 +252,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
       // 处理网络错误
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('操作失败: $error')),
+          SnackBar(content: Text('操作失败: $error', style: TextStyle(fontFamily: "HarmonyOS Sans"))),
         );
       }
     } finally {
@@ -275,7 +275,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.tunnel == null ? '创建隧道' : '编辑隧道'),
+      title: Text(widget.tunnel == null ? '创建隧道' : '编辑隧道', style: TextStyle(fontFamily: "HarmonyOS Sans")),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -291,7 +291,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                       items: _nodes.map((node) {
                         return DropdownMenuItem(
                           value: node.name,
-                          child: Text(node.name),
+                          child: Text(node.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -321,7 +321,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                       items: _tunnelTypes.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(type.toUpperCase()),
+                          child: Text(type.toUpperCase(), style: TextStyle(fontFamily: "HarmonyOS Sans")),
                         );
                       }).toList(),
                       onChanged: (value) {

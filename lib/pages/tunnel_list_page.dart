@@ -69,7 +69,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('隧道停止成功'),
+            content: const Text('隧道停止成功', style: TextStyle(fontFamily: "HarmonyOS Sans")),
             backgroundColor: AppTheme.successColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -89,7 +89,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
         if (status == TunnelStatus.started) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('启动成功'),
+              content: const Text('启动成功', style: TextStyle(fontFamily: "HarmonyOS Sans")),
               backgroundColor: AppTheme.successColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -100,7 +100,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('启动失败，请尝试重新启动，或者查看日志'),
+              content: const Text('启动失败，请尝试重新启动，或者查看日志', style: TextStyle(fontFamily: "HarmonyOS Sans")),
               backgroundColor: AppTheme.errorColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -147,7 +147,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('确认删除'),
+          title: const Text('确认删除', style: TextStyle(fontFamily: "HarmonyOS Sans")),
           content: Text('确定要删除隧道 "${tunnel.name}" 吗？' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500)),
           actions: [
             TextButton(
@@ -173,7 +173,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('隧道删除成功'),
+              content: const Text('隧道删除成功', style: TextStyle(fontFamily: "HarmonyOS Sans")),
               backgroundColor: AppTheme.successColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -186,7 +186,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('隧道删除失败'),
+              content: const Text('隧道删除失败', style: TextStyle(fontFamily: "HarmonyOS Sans")),
               backgroundColor: AppTheme.errorColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
@@ -220,7 +220,7 @@ class _TunnelListPageState extends State<TunnelListPage> {
               backgroundColor: AppTheme.surfaceColor,
               child: _tunnels.isEmpty
                   ? const Center(
-                      child: Text('暂无隧道'),
+                      child: Text('暂无隧道', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                     )
                   : LayoutBuilder(
                       builder: (context, constraints) {
@@ -350,6 +350,7 @@ class _TunnelCardState extends State<TunnelCard> with SingleTickerProviderStateM
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: "HarmonyOS Sans",
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -429,7 +430,7 @@ class _TunnelCardState extends State<TunnelCard> with SingleTickerProviderStateM
                                       ),
                                       child: Text(
                                         widget.isRunning ? '停止' : '启动',
-                                        style: const TextStyle(fontFamily: '黑体',fontSize: 13),
+                                        style: const TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 13),
                                       ),
                                     ),
                                   ),
@@ -462,9 +463,9 @@ class TunnelStatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusFull),
       ),
       child: Text(
-        isRunning ? '运行中' : '已停止',
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
-      ),
+          isRunning ? '运行中' : '已停止',
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white, fontFamily: "HarmonyOS Sans"),
+        ),
     );
   }
 }
@@ -484,14 +485,15 @@ class TunnelTypeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusFull),
       ),
       child: Text(
-        type,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: AppTheme.primaryColor,
+          type,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.primaryColor,
+            fontFamily: "HarmonyOS Sans",
+          ),
+          overflow: TextOverflow.ellipsis,
         ),
-        overflow: TextOverflow.ellipsis,
-      ),
     );
   }
 }
@@ -511,16 +513,17 @@ class TunnelNodeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusFull),
       ),
       child: Text(
-        node,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: AppTheme.secondaryColor,
+          node,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: AppTheme.secondaryColor,
+            fontFamily: "HarmonyOS Sans",
+            overflow: TextOverflow.ellipsis,
+          ),
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
     );
   }
 }
@@ -549,6 +552,7 @@ class TunnelInfoItem extends StatelessWidget {
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: AppTheme.textSecondary,
+              fontFamily: "HarmonyOS Sans",
             ),
         ),
         const SizedBox(width: 6),
@@ -558,6 +562,7 @@ class TunnelInfoItem extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               color: AppTheme.textPrimary,
+              fontFamily: "HarmonyOS Sans",
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -568,7 +573,7 @@ class TunnelInfoItem extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('已复制到剪贴板'),
+                  content: const Text('已复制到剪贴板', style: TextStyle(fontFamily: "HarmonyOS Sans")),
                   backgroundColor: AppTheme.successColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),

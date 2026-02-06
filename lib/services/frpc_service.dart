@@ -15,8 +15,8 @@ class FrpcService {
   // 存储运行中的隧道
   static final Set<int> _runningTunnels = {};
   
-  // 存储当前运行的FRPC进程
-  static Process? _currentProcess;
+  // 存储每个隧道对应的FRPC进程
+  static final Map<int, Process> _tunnelProcesses = {};
   
   // 存储进程状态
   static bool _isProcessRunning = false;
@@ -266,9 +266,10 @@ class FrpcService {
       final errorMsg = '隧道 $tunnelId 启动失败: $e';
       globalLogStream.add(errorMsg);
       await _writeLog(errorMsg);
-      // 即使启动失败，也更新进程状态为停止
-      _isProcessRunning = false;
-      _currentProcess = null;
+      // 即使启动失败，也从进程映射中移除
+      _tunnelProcesses.remove(tunnelId);
+      // 更新进程状态
+      _isProcessRunning = _tunnelProcesses.isNotEmpty;
       return TunnelStatus.failed;
     }
   }
@@ -305,11 +306,23 @@ remote_port = 6000
   // 停止隧道
   static Future<TunnelStatus> stopTunnel(int tunnelId, Function(bool)? onStatusChange) async {
     try {
-      // 停止所有 FRPC 进程
-      await stopAllFrpcProcesses();
+      // 检查该隧道是否有对应的进程
+      if (_tunnelProcesses.containsKey(tunnelId)) {
+        // 停止该隧道的进程
+        final process = _tunnelProcesses[tunnelId];
+        if (process != null) {
+          process.kill();
+          await process.exitCode;
+        }
+        // 从进程映射中移除
+        _tunnelProcesses.remove(tunnelId);
+      }
       
       // 从运行中的隧道中移除
       _runningTunnels.remove(tunnelId);
+      
+      // 更新进程状态
+      _isProcessRunning = _tunnelProcesses.isNotEmpty;
       
       // 通知状态变化
       onStatusChange?.call(false);
@@ -390,7 +403,7 @@ ${['http', 'https'].contains(tunnel.type) ? 'custom_domains = ${tunnel.dorp}' : 
       );
       
       // 更新进程状态
-      _currentProcess = process;
+      _tunnelProcesses[tunnelId] = process;
       _isProcessRunning = true;
       
       // 添加启动信息日志
@@ -416,8 +429,12 @@ ${['http', 'https'].contains(tunnel.type) ? 'custom_domains = ${tunnel.dorp}' : 
       
       // 处理进程退出
       process.exitCode.then((code) {
-        _isProcessRunning = false;
-        _currentProcess = null;
+        // 从进程映射中移除
+        _tunnelProcesses.remove(tunnelId);
+        // 从运行中的隧道中移除
+        _runningTunnels.remove(tunnelId);
+        // 更新进程状态
+        _isProcessRunning = _tunnelProcesses.isNotEmpty;
       });
       
       return process;
@@ -434,27 +451,35 @@ ${['http', 'https'].contains(tunnel.type) ? 'custom_domains = ${tunnel.dorp}' : 
     return _isProcessRunning;
   }
   
-  // 获取当前 FRPC 进程
-  static Process? getCurrentProcess() {
-    return _currentProcess;
+  // 获取所有隧道的进程
+  static Map<int, Process> getAllTunnelProcesses() {
+    return _tunnelProcesses;
+  }
+  
+  // 获取指定隧道的进程
+  static Process? getTunnelProcess(int tunnelId) {
+    return _tunnelProcesses[tunnelId];
   }
   
   // 停止所有 FRPC 进程
   static Future<void> stopAllFrpcProcesses() async {
     try {
-      // 先停止当前进程
-      if (_currentProcess != null) {
-        _currentProcess!.kill();
-        await _currentProcess!.exitCode;
+      // 停止所有隧道的进程
+      for (final tunnelId in _tunnelProcesses.keys.toList()) {
+        final process = _tunnelProcesses[tunnelId];
+        if (process != null) {
+          process.kill();
+          await process.exitCode;
+        }
       }
       
       // 在 Windows 上使用 taskkill 命令停止所有 frpc.exe 进程
       await Process.run('taskkill', ['/F', '/IM', 'frpc.exe'], runInShell: true);
       
       // 更新进程状态
+      _tunnelProcesses.clear();
       _runningTunnels.clear();
       _isProcessRunning = false;
-      _currentProcess = null;
     } catch (e) {
       final errorMsg = '停止 FRPC 进程失败: $e';
       globalLogStream.add(errorMsg);

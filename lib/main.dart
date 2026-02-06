@@ -17,6 +17,9 @@ void main() async {
   // 初始化日志系统
   await FrpcService.initializeLogs();
   
+  // 启动时先杀死所有frpc进程，防止冲突
+  await FrpcService.stopAllFrpcProcesses();
+  
   // 确保插件初始化
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -62,6 +65,8 @@ Future<void> initSystemTray() async {
         onClicked: (menuItem) => windowManager.show()
       ),
       MenuItemLabel(label: '退出', onClicked: (menuItem) async {
+        // 退出前先杀死所有frpc进程
+        await FrpcService.stopAllFrpcProcesses();
         // 取消阻止关闭，然后真正退出应用
         await windowManager.setPreventClose(false);
         // 直接退出应用

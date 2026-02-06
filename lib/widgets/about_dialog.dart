@@ -24,6 +24,7 @@ class ChmlAboutDialog extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppTheme.textPrimary,
+                fontFamily: "HarmonyOS Sans",
               ),
             ),
             const SizedBox(height: 24),
@@ -50,6 +51,7 @@ class ChmlAboutDialog extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: AppTheme.textPrimary,
+                    fontFamily: "HarmonyOS Sans",
                   ),
                 ),
               ],
@@ -60,7 +62,7 @@ class ChmlAboutDialog extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InfoItem(label: '版本', value: '1.3.1'),
+                InfoItem(label: '版本', value: '1.3.2'),
                 InfoItem(label: '平台', value: 'Flutter 跨平台'),
                 InfoItem(label: '描述', value: 'ChmlFrp 客户端'),
               ],
@@ -92,6 +94,7 @@ class ChmlAboutDialog extends StatelessWidget {
                       style: TextStyle(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.w500,
+                        fontFamily: "HarmonyOS Sans",
                       ),
                     ),
                   ],
@@ -115,7 +118,7 @@ class ChmlAboutDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
                   ),
                 ),
-                child: const Text('关闭'),
+                child: const Text('关闭', style: TextStyle(fontFamily: "HarmonyOS Sans")),
               ),
             ),
           ],
@@ -142,6 +145,7 @@ class InfoItem extends StatelessWidget {
             style: TextStyle(
               color: AppTheme.textSecondary,
               fontSize: 14,
+              fontFamily: "HarmonyOS Sans",
             ),
           ),
           Expanded(
@@ -150,6 +154,7 @@ class InfoItem extends StatelessWidget {
               style: TextStyle(
                 color: AppTheme.textPrimary,
                 fontSize: 14,
+                fontFamily: "HarmonyOS Sans",
               ),
               textAlign: TextAlign.right,
             ),
