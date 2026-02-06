@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:system_tray/system_tray.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
+import 'dart:ui';
 import './pages/login_page.dart';
 import './pages/main_page.dart';
 import './services/api_service.dart';
 import './services/frpc_service.dart';
 import './theme/app_theme.dart';
+
+final SystemTray systemTray = SystemTray();
 
 void main() async {
   // 初始化日志系统
@@ -29,9 +35,54 @@ void main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
+    // 设置阻止窗口关闭
+    await windowManager.setPreventClose(true);
   });
+
+  // 初始化系统托盘
+  await initSystemTray();
   
   runApp(const MyApp());
+}
+
+// 初始化系统托盘
+Future<void> initSystemTray() async {
+  try {
+    // 初始化系统托盘
+    await systemTray.initSystemTray(
+      iconPath: Platform.isWindows ? 'assets/images/app_icon.ico' : 'assets/images/app_icon.png',
+      toolTip: 'ChmlFrp',
+    );
+
+    // 创建菜单
+    final Menu menu = Menu();
+    await menu.buildFrom([
+      MenuItemLabel(
+        label: '打开主界面',
+        onClicked: (menuItem) => windowManager.show()
+      ),
+      MenuItemLabel(label: '退出', onClicked: (menuItem) async {
+        // 取消阻止关闭，然后真正退出应用
+        await windowManager.setPreventClose(false);
+        // 直接退出应用
+        exit(0);
+      }),
+    ]);
+    await systemTray.setContextMenu(menu);
+
+    // 注册事件处理器
+    systemTray.registerSystemTrayEventHandler((eventName) {
+      if (eventName == kSystemTrayEventClick) {
+        Platform.isWindows ? windowManager.show() : systemTray.popUpContextMenu();
+      } else if (eventName == kSystemTrayEventRightClick) {
+        Platform.isWindows ? systemTray.popUpContextMenu() : windowManager.show();
+      }
+    });
+  } catch (e) {
+    if (kDebugMode) {
+      print('系统托盘初始化失败: e');
+    }
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -62,11 +113,8 @@ class _MyAppState extends State<MyApp> with WindowListener {
 
   @override
   void onWindowClose() async {
-    // 处理窗口关闭事件
-    bool isPreventClose = await windowManager.isPreventClose();
-    if (isPreventClose) {
-    
-    }
+    // 处理窗口关闭事件，最小化到系统托盘而不是退出
+    await windowManager.hide();
   }
 
   @override
