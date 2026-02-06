@@ -60,7 +60,7 @@ class ChmlAboutDialog extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InfoItem(label: '版本', value: '1.0.0'),
+                InfoItem(label: '版本', value: '1.2.1'),
                 InfoItem(label: '平台', value: 'Flutter 跨平台'),
                 InfoItem(label: '描述', value: 'ChmlFrp 客户端'),
               ],
