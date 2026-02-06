@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     const DashboardPage(),
     const TunnelListPage(),
     const NodeListPage(),
-    Container(), // 占位符，稍后会替换为LogsPage
+    Container(),
     const SettingsPage(),
   ];
 

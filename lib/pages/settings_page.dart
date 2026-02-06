@@ -145,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
-                                            Text('版本：'),
+                                            Text('版本：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
                                             Text('1.2.0'),
                                           ],
                                         ),
@@ -153,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
-                                            Text('平台：'),
+                                            Text('平台：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
                                             Text('Flutter 跨平台'),
                                           ],
                                         ),
@@ -161,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
-                                            Text('描述：'),
+                                            Text('描述：' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
                                             Text('ChmlFrp 客户端'),
                                           ],
                                         ),
@@ -169,7 +169,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                     ),
                                     const SizedBox(height: 24),
 
-                                    // Gitee 仓库链接
+                                    // Github 仓库链接
                                     GestureDetector(
                                       onTap: () async {
                                         final url = Uri.parse('https://github.com/zhengyuliu047-rgb/ChmlFrp-flutter');
@@ -189,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           children: [
                                             Icon(Icons.code, size: 16),
                                             SizedBox(width: 8),
-                                            Text('Github 仓库'),
+                                            Text('Github 仓库' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w500)),
                                           ],
                                         ),
                                       ),
@@ -202,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('关闭'),
+                                  child: const Text('关闭',  style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w500)),
                                 ),
                               ],
                             ),

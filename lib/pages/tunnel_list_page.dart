@@ -148,15 +148,15 @@ class _TunnelListPageState extends State<TunnelListPage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('确认删除'),
-          content: Text('确定要删除隧道 "${tunnel.name}" 吗？'),
+          content: Text('确定要删除隧道 "${tunnel.name}" 吗？' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('取消'),
+              child: const Text('取消' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('删除', style: TextStyle(color: AppTheme.errorColor)),
+              child: Text('删除', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w500)),
             ),
           ],
           shape: RoundedRectangleBorder(

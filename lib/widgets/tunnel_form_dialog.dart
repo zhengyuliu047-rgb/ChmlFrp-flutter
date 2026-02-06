@@ -376,7 +376,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                         const SizedBox(width: 16),
                         ElevatedButton(
                           onPressed: _generateRandomPort,
-                          child: const Text('随机端口'),
+                          child: const Text('随机端口', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w500)),
                         ),
                       ],
                     )
@@ -402,7 +402,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                 children: [
                   Expanded(
                     child: SwitchListTile(
-                      title: const Text('数据加密'),
+                      title: const Text('数据加密', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 16, )),
                       value: _encryption,
                       onChanged: (value) {
                         setState(() {
@@ -414,7 +414,7 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
                   ),
                   Expanded(
                     child: SwitchListTile(
-                      title: const Text('数据压缩'),
+                      title: const Text('数据压缩', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 16, )),
                       value: _compression,
                       onChanged: (value) {
                         setState(() {
@@ -433,13 +433,13 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('取消'),
+          child: const Text('取消' ,style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w500)),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submitForm,
           child: _isSubmitting
               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-              : Text(widget.tunnel == null ? '创建' : '保存'),
+              : Text(widget.tunnel == null ? '创建' : '保存', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 14, fontWeight: FontWeight.w500)),
         ),
       ],
     );
