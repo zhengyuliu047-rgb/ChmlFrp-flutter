@@ -8,8 +8,30 @@
 #include "flutter_window.h"
 #include "utils.h"
 
+// 查找窗口的回调函数
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
+    wchar_t windowTitle[256];
+    GetWindowText(hwnd, windowTitle, 256);
+    if (wcscmp(windowTitle, L"chmlfrp_flutter") == 0) {
+        // 找到窗口，显示并激活
+        ShowWindow(hwnd, SW_SHOW);
+        SetForegroundWindow(hwnd);
+        return FALSE; // 停止枚举
+    }
+    return TRUE; // 继续枚举
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
+    // 检查是否已有实例在运行
+    HANDLE hMutex = CreateMutex(NULL, TRUE, L"ChmlFrp_SingleInstance");
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        // 已有实例在运行，查找并显示其窗口
+        EnumWindows(EnumWindowsProc, NULL);
+        CloseHandle(hMutex);
+        return EXIT_SUCCESS;
+    }
+
     // Attach to console when present (e.g., 'flutter run') or create a
     // new console when running with a debugger.
     if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::IsDebuggerPresent()) {
@@ -45,6 +67,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     Win32Window::Size size(1280, 720);
     if (!window.Create(L"chmlfrp_flutter", origin, size)) {
         ::CoUninitialize();
+        CloseHandle(hMutex);
         return EXIT_FAILURE;
     }
     window.SetQuitOnClose(true);
@@ -56,5 +79,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     }
 
     ::CoUninitialize();
+    CloseHandle(hMutex);
     return EXIT_SUCCESS;
 }

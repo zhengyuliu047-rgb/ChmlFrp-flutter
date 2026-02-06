@@ -7,7 +7,7 @@ class FontRes {
   FontRes._();
 
   static const String PROJECT_NAME = 'chmlfrp_flutter';
-  static const String PROJECT_VERSION = '1.3.01+1';
+  static const String PROJECT_VERSION = '1.3.1+1';
   static const String HARMONYOS_SANS_SC_BLACK = 'HarmonyOS_Sans_SC_Black';
   static const String HARMONYOS_SANS_SC_BOLD = 'HarmonyOS_Sans_SC_Bold';
   static const String HARMONYOS_SANS_SC_LIGHT = 'HarmonyOS_Sans_SC_Light';
