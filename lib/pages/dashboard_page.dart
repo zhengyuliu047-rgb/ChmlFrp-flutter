@@ -255,18 +255,52 @@ class _DashboardPageState extends State<DashboardPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 8),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    childAspectRatio: 2.0,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildStatItem('隧道数量', userInfo.tunnelCount.toString(), AppTheme.primaryColor),
-                      _buildStatItem('运行中', _runningTunnelCount.toString(), AppTheme.successColor),
-                      _buildStatItem('带宽', '${userInfo.bandwidth} Mbps', AppTheme.secondaryColor),
-                      _buildStatItem('积分', userInfo.integral.toString(), AppTheme.accentColor),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildStatItem('隧道数量', userInfo.tunnelCount.toString(), AppTheme.primaryColor),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildStatItem('运行中', _runningTunnelCount.toString(), AppTheme.successColor),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('带宽限速', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                                const SizedBox(height: 4),
+                                ..._getBandwidthLimit(userInfo.usergroup).entries.map((entry) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 1),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          child: Text(entry.key, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                                        ),
+                                        Text(' ${entry.value} Mbps', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildStatItem('积分', userInfo.integral.toString(), AppTheme.accentColor),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
@@ -366,6 +400,22 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+  }
+
+  // 根据用户等级获取带宽限速信息
+  Map<String, int> _getBandwidthLimit(String userGroup) {
+    switch (userGroup) {
+      case '免费用户':
+        return {'国内节点': 8, '国外节点': 32};
+      case '普通会员':
+        return {'国内节点': 16, '国外节点': 64};
+      case '高级会员':
+        return {'国内节点': 24, '国外节点': 96};
+      case '超级会员':
+        return {'国内节点': 32, '国外节点': 128};
+      default:
+        return {'国内节点': 8, '国外节点': 32};
+    }
   }
 }
 
