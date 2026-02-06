@@ -298,20 +298,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     valueColor: AppTheme.textPrimary,
                   ),
                   const SizedBox(height: 20),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: _checkFrpcVersion,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.infoColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                        ),
-                      ),
-                      child: const Text('刷新状态', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
+
                 ],
               ),
             ),
@@ -422,38 +409,28 @@ class DashboardCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: iconColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                          ),
-                          child: Icon(icon, size: 18, color: iconColor),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: iconColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        child: Icon(icon, size: 18, color: iconColor),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: onRefresh,
-                      icon: Icon(Icons.refresh, size: 16, color: AppTheme.textTertiary),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
-                ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
               ),
               const Divider(height: 1, color: AppTheme.borderColor),
               // 卡片内容
