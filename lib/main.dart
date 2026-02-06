@@ -65,34 +65,7 @@ class _MyAppState extends State<MyApp> with WindowListener {
     // 处理窗口关闭事件
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose) {
-      // 可以在这里显示确认对话框
-      // 例如：
-      // bool? result = await showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: const Text('确认关闭'),
-      //       content: const Text('确定要关闭应用吗？'),
-      //       actions: [
-      //         TextButton(
-      //           child: const Text('取消'),
-      //           onPressed: () {
-      //             Navigator.pop(context, false);
-      //           },
-      //         ),
-      //         TextButton(
-      //           child: const Text('确定'),
-      //           onPressed: () {
-      //             Navigator.pop(context, true);
-      //           },
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-      // if (result == true) {
-      //   windowManager.destroy();
-      // }
+    
     }
   }
 
