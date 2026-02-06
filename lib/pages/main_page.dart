@@ -132,37 +132,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shadowColor: Colors.transparent,
-                actions: [
-                  // 用户信息头像
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: GestureDetector(
-                      onTap: () {
-                        // 添加点击动画
-                        _animationController.reset();
-                        _animationController.forward();
-                      },
-                      child: ScaleTransition(
-                        scale: Tween<double>(begin: 1.0, end: 1.05).animate(
-                          CurvedAnimation(
-                            parent: _animationController,
-                            curve: Curves.easeInOut,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          backgroundImage: ApiService.userInfo?.userimg.isNotEmpty == true
-                              ? NetworkImage(ApiService.userInfo!.userimg)
-                              : null,
-                          child: ApiService.userInfo?.userimg.isEmpty == true
-                              ? Text(ApiService.userInfo!.username.substring(0, 1).toUpperCase())
-                              : null,
-                          backgroundColor: AppTheme.surfaceColor,
-                          radius: 24,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                actions: [],
               ),
               body: FadeTransition(
                 opacity: _fadeAnimation,
