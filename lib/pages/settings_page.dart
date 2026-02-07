@@ -415,7 +415,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       ),
                       SettingTile(
                         title: '关于',
-                        subtitle: 'ChmlFrp Flutter 客户端 v1.3.2',
+                        subtitle: 'ChmlFrp Flutter 客户端 v1.4.0',
                         onTap: () {
                           showDialog(
                             context: context,
@@ -455,7 +455,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: const [
                                             Text('版本：', style: TextStyle(fontFamily: "HarmonyOS Sans",fontSize: 12, fontWeight: FontWeight.w700)),
-                                            Text('1.3.2', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                                            Text('1.4.0', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+
                                           ],
                                         ),
                                         const SizedBox(height: 8),
