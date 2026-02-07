@@ -16,11 +16,11 @@ class ApiService {
   // 获取登录状态文件路径
   static Future<File> get _loginStatusFile async {
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\chmlfrp');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
     if (!chmlFrpDir.existsSync()) {
       chmlFrpDir.createSync();
     }
-    return File('${chmlFrpDir.path}\login_status.json');
+    return File('${chmlFrpDir.path}/user.json');
   }
 
   // 初始化，尝试自动登录

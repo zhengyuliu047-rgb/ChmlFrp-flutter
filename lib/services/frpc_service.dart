@@ -48,18 +48,18 @@ class FrpcService {
     
     // 其他平台仍然使用AppData
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\\chmlfrp');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
     if (!chmlFrpDir.existsSync()) {
       chmlFrpDir.createSync(recursive: true);
     }
-    return File('${chmlFrpDir.path}\\frpc.exe');
+    return File('${chmlFrpDir.path}/frpc.exe');
   }
   
   // 获取日志文件目录
   static Future<Directory> get _logDirectory async {
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\\chmlfrp');
-    final logDir = Directory('${chmlFrpDir.path}\\logs');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
+    final logDir = Directory('${chmlFrpDir.path}/logs');
     if (!logDir.existsSync()) {
       logDir.createSync(recursive: true);
     }
@@ -69,7 +69,7 @@ class FrpcService {
   // 获取日志文件
   static Future<File> get _logFile async {
     final logDir = await _logDirectory;
-    return File('${logDir.path}\\frpc.log');
+    return File('${logDir.path}/frpc.log');
   }
   
   // 初始化日志系统
@@ -277,8 +277,8 @@ class FrpcService {
   // 生成默认配置文件
   static Future<File> generateDefaultConfig() async {
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\\chmlfrp');
-    final configDir = Directory('${chmlFrpDir.path}\\configs');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
+    final configDir = Directory('${chmlFrpDir.path}/configs');
     if (!configDir.existsSync()) {
       configDir.createSync(recursive: true);
     }
@@ -298,7 +298,7 @@ local_port = 80
 remote_port = 6000
 ''';
     
-    final configFile = File('${configDir.path}\\default.ini');
+    final configFile = File('${configDir.path}/default.ini');
     await configFile.writeAsString(configContent);
     return configFile;
   }
@@ -348,8 +348,8 @@ remote_port = 6000
   // 生成隧道配置文件
   static Future<File> generateTunnelConfig(TunnelInfo tunnel) async {
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\\chmlfrp');
-    final configDir = Directory('${chmlFrpDir.path}\\configs');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
+    final configDir = Directory('${chmlFrpDir.path}/configs');
     if (!configDir.existsSync()) {
       configDir.createSync(recursive: true);
     }
@@ -369,7 +369,7 @@ local_port = ${tunnel.nport}
 ${['http', 'https'].contains(tunnel.type) ? 'custom_domains = ${tunnel.dorp}' : 'remote_port = ${tunnel.dorp}'}
 ''';
     
-    final configFile = File('${configDir.path}\\tunnel_${tunnel.id}.ini');
+    final configFile = File('${configDir.path}/tunnel_${tunnel.id}.ini');
     await configFile.writeAsString(configContent);
     return configFile;
   }
@@ -493,8 +493,8 @@ class ConfigManager {
   // 获取配置目录
   static Future<Directory> get configDirectory async {
     final directory = Directory(Platform.environment['APPDATA']!);
-    final chmlFrpDir = Directory('${directory.path}\\chmlfrp');
-    final configDir = Directory('${chmlFrpDir.path}\\configs');
+    final chmlFrpDir = Directory('${directory.path}/ChmlFrp');
+    final configDir = Directory('${chmlFrpDir.path}/configs');
     if (!configDir.existsSync()) {
       configDir.createSync(recursive: true);
     }
@@ -504,7 +504,7 @@ class ConfigManager {
   // 获取多环境配置
   static Future<File> getConfigFile(String environment) async {
     final configDir = await configDirectory;
-    return File('${configDir.path}\\${environment}.ini');
+    return File('${configDir.path}/${environment}.ini');
   }
 
   // 生成多环境配置
