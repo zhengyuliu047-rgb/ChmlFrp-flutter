@@ -7,6 +7,6 @@ class DefaultRes {
   DefaultRes._();
 
   static const String PROJECT_NAME = 'chmlfrp_flutter';
-  static const String PROJECT_VERSION = '1.4.0+1';
+  static const String PROJECT_VERSION = '1.4.1+1';
   static const String FLUTTER_ICON = 'flutter_icon.png';
 }

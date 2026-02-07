@@ -364,7 +364,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   const SizedBox(height: 8),
                   _buildSystemInfoItem('操作系统', 'Windows'),
-                  _buildSystemInfoItem('应用版本', '1.4.0'),
+                  _buildSystemInfoItem('应用版本', '1.4.1'),
                   _buildSystemInfoItem('API版本', 'v2'),
                   _buildSystemInfoItem('SDK版本', 'ChmlFrp.SDK'),
                 ],
