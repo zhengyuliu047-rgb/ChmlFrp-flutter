@@ -272,6 +272,117 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
     });
   }
 
+  // 显示节点选择对话框
+  Future<void> _showNodeSelectionDialog() async {
+    final selectedNode = await showDialog<NodeData>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('选择节点', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+          content: SizedBox(
+            width: 400,
+            height: 300,
+            child: ListView.builder(
+              itemCount: _nodes.length,
+              itemBuilder: (context, index) {
+                final node = _nodes[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: ListTile(
+                    title: Text(node.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('区域: ${node.area}', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 2,
+                          children: _generateNodeTags(node),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.pop(context, node);
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('取消', style: TextStyle(fontFamily: "HarmonyOS Sans")),
+            ),
+          ],
+        );
+      },
+    );
+    
+    if (selectedNode != null) {
+      setState(() {
+        _nodeNameController.text = selectedNode.name;
+      });
+    }
+  }
+  
+  // 生成节点标签
+  List<Widget> _generateNodeTags(NodeData node) {
+    final tags = <Widget>[];
+    
+    // 节点组标签
+    if (node.nodegroup == 'user') {
+      tags.add(_buildTag('免费', Colors.green));
+    } else if (node.nodegroup == 'vip') {
+      tags.add(_buildTag('会员', Colors.orange));
+    }
+    
+    // 国内限速标签
+    if (node.china == 'yes') {
+      tags.add(_buildTag('国内限速', Colors.blue));
+    } else if (node.china == 'no') {
+      tags.add(_buildTag('国外限速', Colors.purple));
+    }
+    
+    // 建站支持标签
+    if (node.web == 'yes') {
+      tags.add(_buildTag('允许建站', Colors.green));
+    } else if (node.web == 'no') {
+      tags.add(_buildTag('禁止建站', Colors.red));
+    }
+    
+    // UDP支持标签
+    if (node.udp == 'true') {
+      tags.add(_buildTag('UDP支持', Colors.green));
+    } else if (node.udp == 'false') {
+      tags.add(_buildTag('UDP禁用', Colors.red));
+    }
+    
+    return tags;
+  }
+  
+  // 构建单个标签
+  Widget _buildTag(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      margin: const EdgeInsets.only(right: 4, top: 2),
+      decoration: BoxDecoration(
+        color: color.withAlpha(25),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color, width: 1),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 9,
+          fontFamily: "HarmonyOS Sans",
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -285,21 +396,30 @@ class _TunnelFormDialogState extends State<TunnelFormDialog> {
               // 节点选择
               _isLoading
                   ? const CircularProgressIndicator()
-                  : DropdownButtonFormField<String>(
-                      initialValue: _nodeNameController.text.isNotEmpty ? _nodeNameController.text : null,
-                      decoration: _inputDecoration.copyWith(labelText: '节点'),
-                      items: _nodes.map((node) {
-                        return DropdownMenuItem(
-                          value: node.name,
-                          child: Text(node.name, style: TextStyle(fontFamily: "HarmonyOS Sans")),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          _nodeNameController.text = value;
-                        }
-                      },
-                      validator: (value) => _validateRequired(value, '选择节点'),
+                  : GestureDetector(
+                      onTap: _showNodeSelectionDialog,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _nodeNameController.text.isNotEmpty 
+                                ? _nodeNameController.text 
+                                : '点击选择节点',
+                              style: TextStyle(
+                                fontFamily: "HarmonyOS Sans",
+                                color: _nodeNameController.text.isEmpty ? Colors.grey : null,
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
                     ),
               const SizedBox(height: 16),
 
