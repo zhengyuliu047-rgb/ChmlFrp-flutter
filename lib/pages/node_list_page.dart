@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../services/api_service.dart';
+import '../widgets/uptime_chart.dart';
 
 class NodeListPage extends StatefulWidget {
   const NodeListPage({super.key});
@@ -209,6 +210,8 @@ class _NodeListPageState extends State<NodeListPage> {
                                     '备注: ${node.notes}',
                                     style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontFamily: "HarmonyOS Sans"),
                                   ),
+                                const SizedBox(height: 8),
+                                UptimeChart(nodeName: node.name),
                                 const SizedBox(height: 4),
                                 Wrap(
                                   spacing: 4,

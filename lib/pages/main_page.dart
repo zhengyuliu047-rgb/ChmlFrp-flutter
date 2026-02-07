@@ -157,7 +157,6 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                 _isSidebarExpanded = !_isSidebarExpanded;
               });
             },
-            onLogout: _handleLogout,
           ),
           // 主内容区
           Expanded(
@@ -184,13 +183,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     );
   }
 
-  // 处理登出
-  Future<void> _handleLogout() async {
-    await ApiService.logout();
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, '/login');
-    }
-  }
+  
 }
 
 // 侧边栏组件
@@ -200,7 +193,6 @@ class SidebarWidget extends StatelessWidget {
   final List<Map<String, dynamic>> menuItems;
   final ValueChanged<int> onMenuItemTap;
   final VoidCallback onToggleExpanded;
-  final VoidCallback onLogout;
 
   const SidebarWidget({
     super.key,
@@ -209,7 +201,6 @@ class SidebarWidget extends StatelessWidget {
     required this.menuItems,
     required this.onMenuItemTap,
     required this.onToggleExpanded,
-    required this.onLogout,
   });
 
   @override
@@ -315,44 +306,6 @@ class SidebarWidget extends StatelessWidget {
                   ),
                 );
               },
-            ),
-          ),
-          // 底部登出按钮
-          const Divider(height: 1, color: AppTheme.borderColor),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: onLogout,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppTheme.errorColor.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                  border: Border.all(color: AppTheme.errorColor.withOpacity(0.2)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, size: 22, color: AppTheme.errorColor),
-                      if (isExpanded)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Text(
-                            '登出',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                              color: AppTheme.errorColor,
-                              fontFamily: "HarmonyOS Sans",
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
             ),
           ),
         ],

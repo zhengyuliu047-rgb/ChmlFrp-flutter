@@ -49,6 +49,8 @@ dependencies:
   intl: 0.20.2
   # URL launcher for opening links
   url_launcher: ^6.3.2
+  # Chart library
+  fl_chart: ^0.68.0
   
   # Window management
   window_manager: 0.5.1

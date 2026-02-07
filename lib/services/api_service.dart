@@ -80,8 +80,13 @@ class ApiService {
       if (params != null) {
         uri = uri.replace(queryParameters: params);
       }
+      
+      print('[DEBUG] Making GET request to: $uri');
 
       final response = await http.get(uri);
+
+      print('[DEBUG] GET response status code: ${response.statusCode}');
+      print('[DEBUG] GET response body: ${response.body}');
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -389,6 +394,39 @@ class ApiService {
         print('[DEBUG] Permission denied when getting node info: ${result['msg']}');
       }
     }
+    return null;
+  }
+
+  // 获取节点在线率
+  static Future<Map<String, dynamic>?> getNodeUptime({
+    required int time,
+    String? node,
+  }) async {
+    print('[DEBUG] Fetching node uptime data');
+    
+    // 构建参数
+    final params = <String, String>{
+      'time': time.toString(),
+    };
+    
+    // 如果提供了节点参数，添加到查询参数中
+    if (node != null && node.isNotEmpty) {
+      params['node'] = node;
+    }
+    
+    // 使用正确的端点
+    final endpoint = '$baseUrl/node_uptime';
+    
+    print('[DEBUG] Getting node uptime with params: $params');
+    
+    final result = await _getRequest(endpoint, params);
+    
+    if (result != null) {
+      print('[DEBUG] Node uptime response: $result');
+      return result;
+    }
+    
+    print('[DEBUG] Failed to get node uptime data');
     return null;
   }
 
