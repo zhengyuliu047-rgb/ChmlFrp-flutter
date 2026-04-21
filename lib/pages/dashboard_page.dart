@@ -732,7 +732,7 @@ class _SystemInfoCard extends StatelessWidget {
         children: [
           _SystemInfoRow(label: '操作系统', value: 'Windows'),
           const SizedBox(height: 10),
-          _SystemInfoRow(label: '应用版本', value: '1.4.1'),
+          _SystemInfoRow(label: '应用版本', value: '2.0'),
           const SizedBox(height: 10),
           _SystemInfoRow(label: 'API 版本', value: 'v2'),
           const SizedBox(height: 10),

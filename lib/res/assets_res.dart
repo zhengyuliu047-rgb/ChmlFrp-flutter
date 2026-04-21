@@ -7,5 +7,5 @@ class AssetsRes {
   AssetsRes._();
 
   static const String PROJECT_NAME = 'chmlfrp_flutter';
-  static const String PROJECT_VERSION = '1.4.1+1';
+  static const String PROJECT_VERSION = '2.0.0+1';
 }

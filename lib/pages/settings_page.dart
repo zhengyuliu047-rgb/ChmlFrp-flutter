@@ -307,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       icon: Icons.info_outline_rounded,
                       iconColor: AppTheme.infoColor,
                       title: '关于',
-                      subtitle: 'ChmlFrp Flutter 客户端 v1.4.1',
+                      subtitle: 'ChmlFrp Flutter 客户端 v2.0',
                       showArrow: true,
                       onTap: () => _showAboutDialog(),
                     ),
@@ -431,7 +431,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
               ),
               const SizedBox(height: 4),
               const Text(
-                'Flutter 客户端 v1.4.1',
+                'Flutter 客户端 v2.0',
                 style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
               ),
               const SizedBox(height: 24),

@@ -2,7 +2,7 @@
 
 > **全新视觉版本 V2** - ChmlFrp 的 Flutter 图形化界面客户端，采用现代化 UI 设计，带来更优雅、更流畅的用户体验。
 
-![Version](https://img.shields.io/badge/version-1.4.1-blue)
+![Version](https://img.shields.io/badge/version-2.0-blue)
 ![Flutter](https://img.shields.io/badge/Flutter-3.10.4-02569B)
 ![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey)
 ![License](https://img.shields.io/badge/License-GPL--3.0-green)
@@ -17,7 +17,13 @@
 
 ## 📸 应用截图
 
-_敬请期待_
+<div align="center">
+  <img src="assets/jietu/1.png" alt="截图1" width="800"/>
+  <img src="assets/jietu/2.png" alt="截图2" width="800"/>
+  <img src="assets/jietu/3.png" alt="截图3" width="800"/>
+  <img src="assets/jietu/4.png" alt="截图4" width="800"/>
+  <img src="assets/jietu/5.png" alt="截图5" width="800"/>
+</div>
 
 ## 🚀 核心功能
 
