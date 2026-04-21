@@ -40,19 +40,13 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\flutter_windows.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\frpc.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\frpc.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\url_launcher_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\screen_retriever_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\screen_retriever_windows_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\window_manager_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\system_tray_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\tray_manager_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-; 数据目录
+; 数据目录 (包含 app.so 和 icudtl.dat)
 Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
-
-; 配置目录
-Source: "d:\windc\ChmlFrp-flutter-beautify-design-v2\build\windows\x64\runner\Release\configs\*"; DestDir: "{app}\configs"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"
