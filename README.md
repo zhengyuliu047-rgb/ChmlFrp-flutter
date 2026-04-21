@@ -142,7 +142,7 @@ build/windows/x64/runner/Release/
 
 ## 🎨 设计资源
 
-- **字体**: HarmonyOS Sans (已获授权用于本项目)
+- **字体**: HarmonyOS Sans 
 - **图标**: Flutter 默认图标
 - **配色**: 自定义主题系统 (见 `lib/theme/app_theme.dart`)
 
